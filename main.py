@@ -59,7 +59,6 @@ def generate(tree_index):
 
     #Extract the sequences
     simulated_sequences = list(my_evolver.get_sequences().values())
-    print(simulated_sequences)
     return simulated_sequences
 
 def generateSequences(amount=100):
@@ -69,17 +68,26 @@ def generateSequences(amount=100):
     """
     #Generate Alpa, Beta, Charlie trees
     count = 0
-    for tree in [0,1,2]: #0:alpha, 1:beta, 2:charlie
-        sequences = generate(tree)
-        for sequence in sequences:
-            X = hotencode(sequence)
+    for _ in range(amount):
+        for tree in [0,1,2]: #0:alpha, 1:beta, 2:charlie
+            sequences = generate(tree)
+            #encode sequences
+            encoded_sequences = []
+            for sequence in sequences:
+                encoded_sequences.append(hotencode(sequence))
+            #store as datapoint
+            X = encoded_sequences
             y = tree
             datapoint = (X,y)
             #store datapoint as pickle file
             save(datapoint,count)
             count += 1
 
-#generateSequences(amount=10)
+generateSequences(amount=1)
+print("generation complete")
+print(load(0))
+print(load(1))
+print(load(2))
 
 #### Format data into pytorch dataset
 class SequenceDataset(Dataset):
