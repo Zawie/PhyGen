@@ -6,8 +6,19 @@ import pickle
 #Internal modules
 #import simulator
 
-tree_index = 
-#### Generate Data
+def save(datapoint,id):
+    """
+        Input: datapoint, tuple (X,y)
+                id, integer to represent file name/index
+        Saves datapoint into a pickle file in the data folder
+    """
+    pickle.dump(datapoint,open("data/"+id,"wb"))
+def load(id):
+    """
+        Id: file name (integer)
+    """
+    pickle.load(open("data/"+id,"rb"))
+
 def hotencode(sequence):
     """ 
         Hot encodes inputted sequnce
@@ -28,6 +39,7 @@ def generateSequences(amount=100):
         Trees will be stored in pickle files in /data. (dataset will read from this folder)
     """
     #Generate Alpa, Beta, Charlie trees
+    count = 0
     for tree in [0,1,2]: #0:alpha, 1:beta, 2:charlie
         sequences = simulator.generate(tree=tree)
         for sequence in sequences:
@@ -35,6 +47,8 @@ def generateSequences(amount=100):
             y = tree
             datapoint = (X,y)
             #store datapoint as pickle file
+            save(datapoint,count)
+            count += 1
 
 #### Format data into pytorch dataset
 class SequenceDataset(Dataset):
