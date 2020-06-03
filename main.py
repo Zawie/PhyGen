@@ -83,11 +83,8 @@ def generateSequences(amount=100):
             save(datapoint,count)
             count += 1
 
-generateSequences(amount=1)
+generateSequences(amount=10000)
 print("generation complete")
-print(load(0))
-print(load(1))
-print(load(2))
 
 #### Format data into pytorch dataset
 class SequenceDataset(Dataset):
