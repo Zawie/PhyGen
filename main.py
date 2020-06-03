@@ -93,5 +93,3 @@ class SequenceDataset(Dataset):
     
     def __len__(self):
         return len(self.x_data)
-
-=
