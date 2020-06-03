@@ -17,7 +17,7 @@ def load(id):
     """
         Id: file name (integer)
     """
-    pickle.load(open("data/"+str(id),"rb"))
+    return pickle.load(open("data/"+str(id),"rb"))
 
 def hotencode(sequence):
     """ 
@@ -79,7 +79,7 @@ def generateSequences(amount=100):
             save(datapoint,count)
             count += 1
 
-generateSequences(amount=10)
+#generateSequences(amount=10)
 
 #### Format data into pytorch dataset
 class SequenceDataset(Dataset):
@@ -94,5 +94,4 @@ class SequenceDataset(Dataset):
     def __len__(self):
         return len(self.x_data)
 
-
-
+=
