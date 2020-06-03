@@ -3,21 +3,21 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import pyvolve
 import pickle
-#Internal modules
-#import simulator
+import pyvolve
 
+#Helper functions
 def save(datapoint,id):
     """
         Input: datapoint, tuple (X,y)
                 id, integer to represent file name/index
         Saves datapoint into a pickle file in the data folder
     """
-    pickle.dump(datapoint,open("data/"+id,"wb"))
+    pickle.dump(datapoint,open("data/"+str(id),"wb"))
 def load(id):
     """
         Id: file name (integer)
     """
-    pickle.load(open("data/"+id,"rb"))
+    pickle.load(open("data/"+str(id),"rb"))
 
 def hotencode(sequence):
     """ 
@@ -32,7 +32,36 @@ def hotencode(sequence):
     for char in sequence:
         final.append(code_map[char])
     return final
-        
+
+#Generate functions
+import pyvolve
+tree_map = ["alpha","beta","charlie"]
+
+def generate(tree_index):
+    """
+        Inputs: tree (integer 0-2)
+        Outputs: array of 4 sequences, using the tree from above
+    """
+    tree = tree_map[tree_index]
+    my_tree = pyvolve.read_tree(file = "trees/alpha.tre")
+
+    #Idk weird pyvolve paramets
+    parameters_omega = {"omega": 0.65}
+    parameters_alpha_beta = {"beta": 0.65, "alpha": 0.98} # Corresponds to dN/dS = 0.65 / 0.98
+    my_model = pyvolve.Model("MG", parameters_alpha_beta)
+
+    # Assign the model to a pyvolve.Partition. The size argument indicates to evolve 250 positions (for a codon alignment, this means 250 codons, i.e. 750 nucleotide sites)
+    my_partition = pyvolve.Partition(models = my_model, size = 5)
+
+    # Evolve!
+    my_evolver = pyvolve.Evolver(partitions = my_partition, tree = my_tree, ratefile = None, infofile = None)
+    my_evolver()
+
+    #Extract the sequences
+    simulated_sequences = list(my_evolver.get_sequences().values())
+    print(simulated_sequences)
+    return simulated_sequences
+
 def generateSequences(amount=100):
     """
         Amount: Amount of trees to generate. Will generate 3 for every 1.
@@ -41,7 +70,7 @@ def generateSequences(amount=100):
     #Generate Alpa, Beta, Charlie trees
     count = 0
     for tree in [0,1,2]: #0:alpha, 1:beta, 2:charlie
-        sequences = simulator.generate(tree=tree)
+        sequences = generate(tree)
         for sequence in sequences:
             X = hotencode(sequence)
             y = tree
@@ -49,6 +78,8 @@ def generateSequences(amount=100):
             #store datapoint as pickle file
             save(datapoint,count)
             count += 1
+
+generateSequences(amount=10)
 
 #### Format data into pytorch dataset
 class SequenceDataset(Dataset):
@@ -62,3 +93,6 @@ class SequenceDataset(Dataset):
     
     def __len__(self):
         return len(self.x_data)
+
+
+

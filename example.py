@@ -18,5 +18,5 @@ my_model = pyvolve.Model("MG", parameters_alpha_beta)
 my_partition = pyvolve.Partition(models = my_model, size = 5)
 
 # Evolve!
-my_evolver = pyvolve.Evolver(partitions = my_partition, tree = my_tree)
+my_evolver = pyvolve.Evolver(partitions = my_partition, tree = my_tree, ratefile = None, infofile = None)
 my_evolver()
