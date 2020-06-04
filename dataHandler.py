@@ -34,14 +34,13 @@ def hotencode(sequence):
     return final
 
 #Generate functions
-import pyvolve
-tree_map = ["alpha","beta","charlie"]
 
 def simulate(tree_index,length):
     """
         Inputs: tree (integer 0-2)
         Outputs: array of 4 sequences, using the tree from above
     """
+    tree_map = ["alpha","beta","charlie"]
     tree = tree_map[tree_index]
     my_tree = pyvolve.read_tree(file = "trees/"+tree+".tre")
 
@@ -109,5 +108,5 @@ class SequenceDataset(Dataset):
         _, _, files = next(os.walk("data/"+self.folder))
         return len(files)
 
-#generateData(amount=10000,length=100,folder='train')
-#generateData(amount=1000,length=100,folder='test')
+#generateData(amount=1000,length=100,folder='train')
+#generateData(amount=100,length=100,folder='test')

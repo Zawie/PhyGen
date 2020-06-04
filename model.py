@@ -6,7 +6,7 @@ import torch.optim as optim
 trainset = dataHandler.SequenceDataset(folder='train')
 testset = dataHandler.SequenceDataset(folder='test')
 
-train_loader = torch.utils.data.DataLoader(dataset=trainset, batch_size=5000, shuffle=True)
+train_loader = torch.utils.data.DataLoader(dataset=trainset, batch_size=500, shuffle=True)
 test_loader = torch.utils.data.DataLoader(dataset=testset, batch_size=1, shuffle=True)
 
 class PhyNet(nn.Module):
@@ -103,7 +103,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 #training cycle
 print("Training...")
-for epoch in range(10):
+for epoch in range(25):
     print('Epoch:',epoch+1)
     for i, data in enumerate(train_loader,0):
         #get the input & labels
