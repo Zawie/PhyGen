@@ -32,7 +32,69 @@ class PhyNet(nn.Module):
         x = self.sigmoid(x)
         return x
 
-model = PhyNet()
+class _ResidueModule(torch.nn.Module):
+
+    def __init__(self, channel_count):
+        super().__init__()
+        self.layers = torch.nn.Sequential(
+            torch.nn.Conv1d(channel_count, channel_count, 1),
+            torch.nn.BatchNorm1d(channel_count),
+            torch.nn.ReLU(),
+            torch.nn.Conv1d(channel_count, channel_count, 1),
+            torch.nn.BatchNorm1d(channel_count),
+            torch.nn.ReLU(),
+        )
+
+    def forward(self, x):
+        return x + self.layers(x)
+
+class dnn1(torch.nn.Module):
+    """A neural network model to predict phylogenetic trees."""
+
+    def __init__(self):
+        """Create a neural network model."""
+        super().__init__()
+        self.conv = torch.nn.Sequential(
+            torch.nn.Conv1d(80, 80, 1, groups=20),
+            torch.nn.BatchNorm1d(80),
+            torch.nn.ReLU(),
+            torch.nn.Conv1d(80, 32, 1),
+            torch.nn.BatchNorm1d(32),
+            torch.nn.ReLU(),
+            _ResidueModule(32),
+            _ResidueModule(32),
+            torch.nn.AvgPool1d(2),
+            _ResidueModule(32),
+            _ResidueModule(32),
+            torch.nn.AvgPool1d(2),
+            _ResidueModule(32),
+            _ResidueModule(32),
+            torch.nn.AvgPool1d(2),
+            _ResidueModule(32),
+            _ResidueModule(32),
+            torch.nn.AdaptiveAvgPool1d(1),
+        )
+        self.classifier = torch.nn.Linear(32, 3)
+
+    def forward(self, x):
+        """Predict phylogenetic trees for the given sequences.
+
+        Parameters
+        ----------
+        x : torch.Tensor
+            One-hot encoded sequences.
+
+        Returns
+        -------
+        torch.Tensor
+            The predicted adjacency trees.
+        """
+        x = x.view(x.size()[0], 80, -1)
+        x = self.conv(x).squeeze(dim=2)
+        return self.classifier(x)
+
+
+model = dnn1()
 print(model)
 
 #define critierion and optimizer
@@ -41,7 +103,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 #training cycle
 print("Training...")
-for epoch in range(3):
+for epoch in range(10):
     print('Epoch:',epoch+1)
     for i, data in enumerate(train_loader,0):
         #get the input & labels
