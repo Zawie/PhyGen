@@ -54,7 +54,7 @@ def simulate(tree_index,length):
 
     # Evolve!
     my_evolver = pyvolve.Evolver(partitions = my_partition, tree = my_tree, ratefile = None, infofile = None)
-    my_evolver()
+    my_evolver(ratefile = None, infofile = None)
 
     #Extract the sequences
     simulated_sequences = list(my_evolver.get_sequences().values())
@@ -72,16 +72,16 @@ def generatePoint(tree,length = 100):
     datapoint = (X,y)
     return datapoint
 
-def generateData(amount=10000,length=100,folder="train"):
+def generateData(amount=10000,length=100,folder="train",start=0):
     """
         Amount: Amount of trees to generate. Will generate 3 for every 1.
         Trees will be stored in pickle files in /data. (dataset will read from this folder)
     """
     #Generate Alpa, Beta, Charlie trees
-    count = 0
+    count = start
     print("Generating data...")
     for i in range(amount):
-        if (i%100 == 0):
+        if (i%10 == 0):
             print(str(i/amount*100)+"%")
         for tree in [0,1,2]: #0:alpha, 1:beta, 2:charlie
             datapoint = generatePoint(tree,length)
@@ -108,5 +108,5 @@ class SequenceDataset(Dataset):
         _, _, files = next(os.walk("data/"+self.folder))
         return len(files)
 
-#generateData(amount=1000,length=100,folder='train')
-#generateData(amount=100,length=100,folder='test')
+#generateData(amount=10000,length=1000,folder='train',start=5935)
+#generateData(amount=1000,length=1000,folder='test',start=599)
