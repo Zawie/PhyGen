@@ -1,5 +1,6 @@
 # PhyGen
 A deep learning package that uses a Residual/Convolutional neural network to infer phylogenetic trees from sequence data.
+Future releases will be focused on handling the case of recombinant DNA in the sequence generation process.
 
 # Installation
 Listed below are the packages and commands you need to get started!
