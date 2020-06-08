@@ -1,5 +1,5 @@
 # PhyGen
-Just a system to generate sequences to run the model on
+A deep learning package that uses a Residual/Convolutional neural network to infer phylogenetic trees from sequence data.
 
 # Installation
 Listed below are the packages and commands you need to get started!
